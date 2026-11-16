@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartHome Hub - Controller Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header: User & SmartHomeController Singleton Status -->
+    <header>
+      <div class="brand">
+        <div class="brand-mark">⌂</div>
+        <div class="brand-meta">
+          <h1>SmartHome Hub</h1>
+          <p>Residence #101 &bull; 42 Willow Creek Rd</p>
+        </div>
+      </div>
+      
+      <div class="header-badges">
+        <div class="pill pill-online">
+          <span class="dot"></span>
+          <span>Controller: Connected (ID #101)</span>
+        </div>
+        <div class="pill">
+          <span>User: Jahnavi S. (#2401)</span>
+        </div>
+        <button class="pill btn-pill" id="securityBtn" onclick="toggleSecurityUI()">
+          Security: Armed
+        </button>
+      </div>
+    </header>
+
+    <!-- Strategy Engine: HomeMode -->
+    <section class="hero-panel">
+      <div>
+        <div class="hero-subtitle">Strategy Pattern &bull; HomeMode</div>
+        <h2 id="activeModeTitle" style="font-size: 22px; font-weight: 600;">Home Mode</h2>
+        <p class="mode-desc" id="modeDescription">
+          Standard routine active. Devices set for comfortable daily living with balanced climate control and lighting.
+        </p>
+
+        <div class="mode-options">
+          <button class="mode-btn active" data-mode="Home" onclick="setModeUI('Home')">Home</button>
+          <button class="mode-btn" data-mode="Away" onclick="setModeUI('Away')">Away</button>
+          <button class="mode-btn" data-mode="Night" onclick="setModeUI('Night')">Night</button>
+          <button class="mode-btn" data-mode="Eco" onclick="setModeUI('Eco')">Eco Mode</button>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span class="stat-label">Subject (Singleton)</span>
+          <span class="stat-value">SmartHomeController</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Active Observers</span>
+          <span class="stat-value" id="activeCount">4 of 4 Devices</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Real-Time Power</span>
+          <span class="stat-value power-value" id="totalPower">1.22 kW</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Connected Observers (SmartDevice Subclasses) -->
+    <div>
+      <div class="section-header">
+        <h3 class="section-title">Connected Observers</h3>
+        <span class="section-sub">Subclasses of «abstract, Observer» SmartDevice</span>
+      </div>
+
+      <div class="device-grid">
+        
+        <!-- Light Card -->
+        <div class="device-card is-active" id="card-light">
+          <div>
+            <div class="device-top">
+              <div class="device-icon-wrap">💡</div>
+              <label class="switch">
+                <input type="checkbox" id="lightSwitch" checked onchange="toggleDeviceUI('light')">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="device-title">Living Room Light</div>
+            <div class="device-meta">Class: Light &bull; ID: #301</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Brightness</span>
+              <span id="brightnessVal">80%</span>
+            </div>
+            <input type="range" class="range-slider" min="10" max="100" value="80" id="brightnessInput" oninput="updateBrightnessUI(this.value)">
+            
+            <div class="control-label" style="margin-top: 6px;">
+              <span>Tone (Color)</span>
+            </div>
+            <div class="segmented-group">
+              <button class="seg-btn active" onclick="setLightToneUI(this, 'Warm Amber')">Warm</button>
+              <button class="seg-btn" onclick="setLightToneUI(this, 'Natural')">Natural</button>
+              <button class="seg-btn" onclick="setLightToneUI(this, 'Soft White')">Soft</button>
+            </div>
+          </div>
+
+          <div class="stat-label" style="font-size: 11.5px;">Draw: <strong id="lightPower">14 W</strong></div>
+        </div>
+
+        <!-- Fan Card -->
+        <div class="device-card is-active" id="card-fan">
+          <div>
+            <div class="device-top">
+              <div class="device-icon-wrap">🌀</div>
+              <label class="switch">
+                <input type="checkbox" id="fanSwitch" checked onchange="toggleDeviceUI('fan')">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="device-title">Ceiling Fan</div>
+            <div class="device-meta">Class: Fan &bull; ID: #302</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Speed</span>
+              <span id="fanSpeedLabel">Level 2</span>
+            </div>
+            <div class="segmented-group">
+              <button class="seg-btn" onclick="setFanSpeedUI(1, this)">1</button>
+              <button class="seg-btn active" onclick="setFanSpeedUI(2, this)">2</button>
+              <button class="seg-btn" onclick="setFanSpeedUI(3, this)">3</button>
+              <button class="seg-btn" onclick="setFanSpeedUI(4, this)">Max</button>
+            </div>
+
+            <div class="control-label" style="margin-top: 6px;">
+              <span>Timer</span>
+              <span id="fanTimerLabel">1h</span>
+            </div>
+            <div class="segmented-group">
+              <button class="seg-btn" onclick="setFanTimerUI('Off', this)">Off</button>
+              <button class="seg-btn active" onclick="setFanTimerUI('1h', this)">1h</button>
+              <button class="seg-btn" onclick="setFanTimerUI('2h', this)">2h</button>
+            </div>
+          </div>
+
+          <div class="stat-label" style="font-size: 11.5px;">Draw: <strong id="fanPower">55 W</strong></div>
+        </div>
+
+        <!-- Air Conditioner Card -->
+        <div class="device-card is-active" id="card-ac">
+          <div>
+            <div class="device-top">
+              <div class="device-icon-wrap">❄️</div>
+              <label class="switch">
+                <input type="checkbox" id="acSwitch" checked onchange="toggleDeviceUI('ac')">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="device-title">Air Conditioner</div>
+            <div class="device-meta">Class: AirConditioner &bull; ID: #303</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Thermostat</span>
+            </div>
+            <div class="temp-control">
+              <button class="temp-btn" onclick="adjustTempUI(-0.5)">&minus;</button>
+              <div class="temp-display"><span id="acTemp">22.5</span>&deg;C</div>
+              <button class="temp-btn" onclick="adjustTempUI(0.5)">&#43;</button>
+            </div>
+
+            <div class="control-label" style="margin-top: 6px;">
+              <span>Mode</span>
+            </div>
+            <div class="segmented-group">
+              <button class="seg-btn active" onclick="setAcModeUI('Cool', this)">Cool</button>
+              <button class="seg-btn" onclick="setAcModeUI('Dry', this)">Dry</button>
+              <button class="seg-btn" onclick="setAcModeUI('Eco', this)">Eco</button>
+            </div>
+          </div>
+
+          <div class="stat-label" style="font-size: 11.5px;">Draw: <strong id="acPower">1150 W</strong></div>
+        </div>
+
+        <!-- Smart Lock Card -->
+        <div class="device-card is-active" id="card-lock">
+          <div>
+            <div class="device-top">
+              <div class="device-icon-wrap">🔒</div>
+              <label class="switch">
+                <input type="checkbox" id="lockSwitch" checked onchange="toggleDeviceUI('lock')">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="device-title">Front Entry Lock</div>
+            <div class="device-meta">Class: SmartLock &bull; ID: #304</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Security State</span>
+              <span id="lockStatusText" style="color: var(--accent); font-weight: 600;">Locked</span>
+            </div>
+            <button class="mode-btn" id="lockToggleBtn" onclick="toggleLockUI()" style="width: 100%; text-align: center; padding: 8px;">
+              Tap to Unlock
+            </button>
+            <div style="font-size: 11px; color: var(--text-faint); margin-top: 2px;">Access PIN: &bull;&bull;&bull;&bull; (Secured)</div>
+          </div>
+
+          <div class="stat-label" style="font-size: 11.5px;">Draw: <strong id="lockPower">5 W</strong></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Notification Service & Command Actions -->
+    <div class="bottom-layout">
+      
+      <!-- Event Logs -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4 style="font-size: 15px; font-weight: 600;">Notification Feed</h4>
+          <span style="font-size: 12px; color: var(--text-muted);">NotificationService &bull; Live</span>
+        </div>
+        <div class="feed-list" id="feedList"></div>
+      </div>
+
+      <!-- Quick Commands -->
+      <div class="card">
+        <h4 style="font-size: 15px; font-weight: 600;">System Commands</h4>
+        <div class="quick-actions">
+          <button class="action-btn" onclick="triggerAlertUI()">
+            <span>Send Alert</span>
+            <span>&rarr;</span>
+          </button>
+          <button class="action-btn" onclick="refreshObserversUI()">
+            <span>Notify Observers</span>
+            <span>↻</span>
+          </button>
+          <button class="action-btn danger" onclick="emergencyShutdownUI()">
+            <span>Emergency Standby</span>
+            <span>⏻</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- UML Architecture Footer -->
+    <footer>
+      <div>
+        <span>Architectural Patterns:</span>
+        <div class="arch-tags" style="display: inline-flex; margin-left: 6px;">
+          <span class="arch-tag">Singleton (Controller)</span>
+          <span class="arch-tag">Observer (Devices)</span>
+          <span class="arch-tag">Strategy (HomeMode)</span>
+        </div>
+      </div>
+      <div>1MP24CG017 &bull; Jahnavi Chikkarsinakere Sathish</div>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
