@@ -2,7 +2,7 @@
 
 A minimalist, responsive Smart Home Automation Dashboard implemented directly from an Object-Oriented UML class diagram, featuring three classical **GoF Design Patterns**: **Singleton**, **Observer**, and **Strategy**.
 
-![UML Diagram](./uml.png)
+![UML Diagram](uml.jpeg)
 
 ---
 
